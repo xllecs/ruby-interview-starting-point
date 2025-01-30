@@ -31,3 +31,52 @@ This repo will serve as a starting point for your code challenge. Feel free to c
 ---
 
 Good luck!
+
+
+# Problem
+
+## Overview
+
+You have been hired by a company that builds a app for coffee addicts. You are 
+responsible for taking the user’s location and returning a list of the three closest coffee shops.
+
+## Starting point
+
+Fork or clone our ruby starter project: https://github.com/Agilefreaks/ruby-interview-starting-point
+
+## Input
+
+The coffee shop list is a comma separated file with rows of the following form:
+`Name,X Coordinate,Y Coordinate`
+
+The quality of data in this list of coffee shops may vary. Malformed entries should cause the 
+program to exit appropriately. 
+
+Notice that the data file will be read from an network location
+(ex: https://raw.githubusercontent.com/Agilefreaks/test_oop/master/coffee_shops.csv)
+
+## Output
+
+Write a REST API in Rails that offers the posibility to take the user's coordinates and
+return a list of the three closest coffee shops (including distance from the user) in 
+order of closest to farthest. These distances should be rounded to four decimal places. 
+
+Assume all coordinates lie on a plane.
+
+## Example
+
+Using the [coffee_shops.csv](data/coffee_shops.csv):
+
+__Input__
+```
+47.6 -122.4
+```
+
+__Expected output__
+```
+Starbucks Seattle2,0.0645
+Starbucks Seattle,0.0861
+Starbucks SF,10.0793
+```
+
+# Proposed solution
