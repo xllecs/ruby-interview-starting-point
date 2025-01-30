@@ -4,6 +4,9 @@ require_relative '../../app/services/coffee_shops_service'
 RSpec.describe CoffeeShops do
   subject(:coffee_shops_cli) { described_class.new }
 
+  let(:url) { 'https://example.com/coffee_shops.csv' }
+  let(:file) { 'data/coffee_shops.csv' }
+
   describe '#closest_shops' do
     context 'when the user provides valid coordinates' do
       let(:user_x) { '47.6' }
@@ -19,21 +22,39 @@ RSpec.describe CoffeeShops do
         CSV
       end
 
-      before do
-        stub_request(:get, ENV['CSV_DATA'])
-          .and_return(status: 200, body: csv_data)
-      end
-
       it 'sends correct parameters to CoffeeShopsService' do
         expect(CoffeeShopsService).to receive(:new).with(47.6, -122.4).and_call_original
 
         coffee_shops_cli.closest_shops('47.6', '-122.4')
       end
 
-      it 'outputs the 3 closest coffee shops to the user' do
-        expected_output = "\"Starbucks Seattle2,0.0645\"\n\"Starbucks Seattle,0.0861\"\n\"Starbucks SF,10.0793\"\n"
+      context 'when user does not pass any option' do
+        it 'defaults to using the local CSV file' do
+          expected_output = "\"Starbucks Seattle2,0.0645\"\n\"Starbucks Seattle,0.0861\"\n\"Starbucks SF,10.0793\"\n"
+  
+          expect { coffee_shops_cli.invoke(:closest_shops, [47.6, -122.4]) }.to output(expected_output).to_stdout
+        end
+      end
 
-        expect { coffee_shops_cli.closest_shops(user_x, user_y) }.to output(expected_output).to_stdout
+      context 'when user passes the --url option' do
+        before do
+          stub_request(:get, url)
+            .and_return(status: 200, body: csv_data)
+        end
+
+        it 'outputs the 3 closest coffee shops to the user' do
+          expected_output = "\"Starbucks Seattle2,0.0645\"\n\"Starbucks Seattle,0.0861\"\n\"Starbucks SF,10.0793\"\n"
+  
+          expect { coffee_shops_cli.invoke(:closest_shops, [47.6, -122.4], url: url) }.to output(expected_output).to_stdout
+        end
+      end
+
+      context 'when user passes the --csv option' do
+        it 'outputs the 3 closest coffee shops to the user' do
+          expected_output = "\"Starbucks Seattle2,0.0645\"\n\"Starbucks Seattle,0.0861\"\n\"Starbucks SF,10.0793\"\n"
+  
+          expect { coffee_shops_cli.invoke(:closest_shops, [47.6, -122.4], csv: file) }.to output(expected_output).to_stdout
+        end
       end
     end
 
