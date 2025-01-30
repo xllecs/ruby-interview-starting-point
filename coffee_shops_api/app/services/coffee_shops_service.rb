@@ -7,8 +7,8 @@ class CoffeeShopsService
     @user_y = user_y
   end
 
-  def get_closest_coffee_shops(url)
-    shops = url ? get_coffee_shops_from_url : get_coffee_shops_from_file
+  def get_closest_coffee_shops(source)
+    shops = source.start_with?("http") ? get_coffee_shops_from_url(source) : get_coffee_shops_from_file(source)
     shops.map do |shop|
       distance = calculate_distance(shop)
       shop[:distance] = distance
@@ -18,12 +18,12 @@ class CoffeeShopsService
 
   private
 
-  def get_coffee_shops_from_file
-    parse_coffee_shops(CSV.read("data/coffee_shops.csv"))
+  def get_coffee_shops_from_file(source)
+    parse_coffee_shops(CSV.read(source))
   end
 
-  def get_coffee_shops_from_url
-    response = HTTParty.get(ENV["CSV_DATA"])
+  def get_coffee_shops_from_url(source)
+    response = HTTParty.get(source)
 
     return [] if response.body == ""
 
