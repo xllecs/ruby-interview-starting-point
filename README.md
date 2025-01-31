@@ -79,4 +79,50 @@ Starbucks Seattle,0.0861
 Starbucks SF,10.0793
 ```
 
-# Proposed solution
+# Implementation
+
+## CLI command
+I have implemented the CLI command using the Thor gem which is a neat and smooth way to set up your own custom CLI commands.
+The current logic will make sure that the passed arguments are nothing else than numerical values and that they do not exceed
+the valid ranges.
+It leverages [CoffeeShopsService](https://github.com/xllecs/ruby-interview-starting-point/blob/develop/coffee_shops_api/app/services/coffee_shops_service.rb) in which the heavy lifting is being taken care of and it will return the 3 closest coffee shops.
+In the end, the command will output the shops in the terminal in ascending order by distance.
+
+We have got a couple options we can use:
+- `--url`: Provide a URL that points to a valid CSV dataset.
+- `--file`: Provide a file path to a CSV dataset.
+
+Not using any of the options above will default to using a pre-configured local file.
+
+## Coffee shops service
+`CoffeeShopsService` is responsible for:
+- Fetching the coffee shops.
+- Validating them.
+- Calculating the distance between the user and each coffee shop. 
+- Sorting the coffee shops and returning the 3 closest ones to the user.
+
+Depending on the options passed to the CLI command the service will use one of `get_coffee_shops_from_file` and `get_coffee_shops_from_url`.
+
+Both of these methods make use of `parse_coffee_shops` where one of two things will happen:
+- Raise an error if any of the rows is malformed.
+- Create a hash based on the row's elements otherwise.
+
+Lastly, `get_closest_coffee_shops` is where we calculate the distance and sort the results in ascending order by distance.  
+Since we assume that all coordinates lie on a plane, we can make use of the Euclidian distance formula:  
+
+$`\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}`$  
+
+where:
+- $`(x_1, y_1)`$ represents the user's coordinates.
+- $`(x_2, y_2)`$ represents the coffee shop's coordinates.
+
+## How to use the API
+1. `cd` into the `coffee_shops_api` folder.
+2. Execute `thor coffee_shops:closest_shops 47.6 -122.4`.
+
+Example output:
+```
+Starbucks Seattle2,0.0645
+Starbucks Seattle,0.0861
+Starbucks SF,10.0793
+```
