@@ -68,6 +68,15 @@ RSpec.describe CoffeeShops do
         end
       end
 
+      context 'when the user provide malformed coordinates' do
+        let(:user_x) { '47.6' }
+        let(:user_y) { '--123...3' }
+
+        it 'outputs an error message and returns' do
+          expect { coffee_shops_cli.closest_shops(user_x, user_y) }.to output("Invalid arguments. Please provide valid coordinates.\n").to_stdout
+        end
+      end
+
       context 'when coordinates exceed the valid ranges' do
         let(:user_x) { '47.6' }
         let(:user_y) { '181' }

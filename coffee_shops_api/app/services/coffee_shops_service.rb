@@ -48,7 +48,7 @@ class CoffeeShopsService
   end
 
   def is_valid_coordinate?(value)
-    return false if value.nil? || value.strip.empty? || !value.match?(/\A^\-?\d+\.?\d+\z/)
+    return false if value.nil? || value.strip.empty? || !value.match?(/\A\-?\d+\.?\d+\z/)
     true
   end
 

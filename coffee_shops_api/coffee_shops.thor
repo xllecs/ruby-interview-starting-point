@@ -14,6 +14,11 @@ class CoffeeShops < Thor
       return
     end
 
+    if !user_x.match?(/\A\-?\d+\.?\d+\z/) || !user_y.match?(/\A\-?\d+\.?\d+\z/)
+      puts 'Invalid arguments. Please provide valid coordinates.'
+      return
+    end
+
     if user_x.to_f < -90 || user_x.to_f > 90 || user_y.to_f < -180 || user_y.to_f > 180
       puts 'Given coordinates exceed the valid ranges. Please provide valid coordinates.'
       return
